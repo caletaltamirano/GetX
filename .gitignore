@@ -3,12 +3,26 @@
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
-build/
 .pub-cache/
 .pub/
+build/
+/build/
+**/doc/api/
 *.iml
 .idea/
 .vscode/
+
+# Symbolication / obfuscation
+app.*.symbols
+app.*.map.json
+
+# Android / iOS locales
+**/android/**/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/local.properties
+**/ios/Flutter/.last_build_id
+**/ios/Pods/
 
 # Misc
 *.log
