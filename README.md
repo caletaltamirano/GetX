@@ -31,6 +31,51 @@ Definición de Terminado, comandos de Git y el mapa del flujo de estado con GetX
 
 `TF-1` → `TF-2` → `TF-3` / `TF-4` / `TF-5` (en paralelo) → `TF-6`
 
+## Estado de avance
+
+| ID | Historia | Estado | Archivos |
+|----|----------|--------|----------|
+| TF-1 | Base + modelo `Task` + `GetMaterialApp` | ✅ Listo | `lib/main.dart`, `lib/models/task.dart` |
+| TF-2 | `TaskController` (lista observable + lógica) | ✅ Listo | `lib/controllers/task_controller.dart` |
+| TF-3 | Formulario para registrar una tarea | ✅ Listo | `lib/widgets/task_form.dart` |
+| TF-4 | Lista reactiva + fila con checkbox y borrar | ✅ Listo | `lib/widgets/task_list.dart`, `lib/widgets/task_tile.dart` |
+| TF-5 | Tablero de estadísticas | ✅ Listo | `lib/widgets/stats_board.dart` |
+| TF-6 | Integración + `Binding` + pantalla + docs | ✅ Listo | `lib/bindings/task_binding.dart`, `lib/screens/task_screen.dart` |
+
+Todo el código está comentado en español, línea por línea, explicando los
+conceptos de GetX (`.obs`, `Obx`, `RxList`, `GetxController`, `Bindings`,
+`Get.find`, `Get.lazyPut`).
+
+## Cómo correr
+
+```bash
+flutter pub get
+flutter run       # la app
+flutter test      # los tests del modelo y del controller
+```
+
+> Requiere Flutter con Dart `^3.13.0` (Flutter 3.13 o superior).
+
+## Estructura del código
+
+```
+lib/
+├── main.dart                  # GetMaterialApp + initialBinding
+├── models/
+│   └── task.dart              # modelo de datos (sin GetX)
+├── controllers/
+│   └── task_controller.dart   # ESTADO: RxList<Task> + lógica (add/toggle/delete)
+├── bindings/
+│   └── task_binding.dart      # registra el TaskController (inyección de deps.)
+├── screens/
+│   └── task_screen.dart       # arma la pantalla con los 3 widgets
+└── widgets/
+    ├── stats_board.dart       # Obx -> Total / Pendientes / Completadas
+    ├── task_form.dart         # TextField + botón -> controller.addTask
+    ├── task_list.dart         # Obx -> ListView reactivo
+    └── task_tile.dart         # fila: checkbox + título + borrar
+```
+
 ## Flujo de estado (GetX)
 
 ```mermaid

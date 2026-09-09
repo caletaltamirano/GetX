@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'bindings/task_binding.dart';
 import 'screens/task_screen.dart';
 
+/// Punto de entrada de la app. Nada especial: arranca `TaskFlowApp`.
 void main() {
   runApp(const TaskFlowApp());
 }
 
-/// Raíz de la aplicación.
+/// ===========================================================================
+///  RAÍZ DE LA APP: TaskFlowApp
+/// ===========================================================================
 ///
-/// Usamos [GetMaterialApp] (en vez de `MaterialApp`) para habilitar el manejo
-/// de rutas, los bindings y la inyección de dependencias de GetX.
+/// Usamos `GetMaterialApp` en lugar del `MaterialApp` normal. Eso es lo que
+/// "enciende" GetX en toda la aplicación y habilita:
+///   - la inyección de dependencias (Bindings)
+///   - la navegación de GetX (`Get.to`, `Get.back`, ...)
+///   - utilidades como `Get.snackbar`, `Get.dialog`, etc.
 ///
-/// El `initialBinding` que registra el `TaskController` se agrega en la
-/// historia TF-6 (integración).
+/// Si dejáramos `MaterialApp`, `Obx` seguiría funcionando, pero perderíamos
+/// Bindings y navegación de GetX.
 class TaskFlowApp extends StatelessWidget {
   const TaskFlowApp({super.key});
 
@@ -22,10 +29,18 @@ class TaskFlowApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'TaskFlow',
       debugShowCheckedModeBanner: false,
+
+      /// `initialBinding` se ejecuta ANTES de mostrar la primera pantalla.
+      /// `TaskBinding` registra el `TaskController`, así que cuando
+      /// `TaskScreen` y sus widgets hagan `Get.find<TaskController>()`, el
+      /// controller ya va a existir.
+      initialBinding: TaskBinding(),
+
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
+
       home: const TaskScreen(),
     );
   }
