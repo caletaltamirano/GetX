@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import 'bindings/task_binding.dart';
 import 'screens/task_screen.dart';
+import 'theme/app_theme.dart';
 
 /// Punto de entrada de la app. Nada especial: arranca `TaskFlowApp`.
 void main() {
@@ -36,10 +37,8 @@ class TaskFlowApp extends StatelessWidget {
       /// controller ya va a existir.
       initialBinding: TaskBinding(),
 
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
-      ),
+      /// Toda la apariencia (colores, sombras, bordes) vive en `AppTheme`.
+      theme: AppTheme.light,
 
       home: const TaskScreen(),
     );
