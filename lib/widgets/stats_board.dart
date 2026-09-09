@@ -3,13 +3,24 @@ import 'package:get/get.dart';
 
 import '../controllers/task_controller.dart';
 
-/// Tablero de estadísticas (TF-5). Un único Obx: cuando `tasks` cambia en
-/// TaskController, solo estas 3 tarjetas se reconstruyen.
+/// ===========================================================================
+///  WIDGET: StatsBoard  (TF-5 - tablero de estadísticas)
+/// ===========================================================================
+///
+/// Muestra 3 tarjetas: Total / Pendientes / Completadas.
+///
+/// Punto para estudiar GetX:
+///   - Los números vienen de getters del controller (`totalTasks`, etc.) que
+///     NO son `.obs`. Aun así el tablero es reactivo porque esos getters leen
+///     `tasks` DENTRO de este `Obx`.
+///   - Un solo `Obx` envuelve las 3 tarjetas: cuando `tasks` cambia, solo esta
+///     fila se vuelve a dibujar, no toda la pantalla.
 class StatsBoard extends StatelessWidget {
   const StatsBoard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Instancia única del controller (registrada por TaskBinding).
     final controller = Get.find<TaskController>();
 
     return Obx(
@@ -47,6 +58,8 @@ class StatsBoard extends StatelessWidget {
   }
 }
 
+/// Tarjeta individual de estadística. Es un widget "tonto": recibe los datos
+/// ya listos por parámetro y solo los dibuja. No sabe nada de GetX.
 class _StatCard extends StatelessWidget {
   const _StatCard({
     required this.icon,
