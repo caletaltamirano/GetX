@@ -60,13 +60,15 @@ flutter test      # los tests del modelo y del controller
 
 ```
 lib/
-├── main.dart                  # GetMaterialApp + initialBinding
+├── main.dart                  # GetMaterialApp + initialBinding + tema
 ├── models/
 │   └── task.dart              # modelo de datos (sin GetX)
 ├── controllers/
 │   └── task_controller.dart   # ESTADO: RxList<Task> + lógica (add/toggle/delete)
 ├── bindings/
 │   └── task_binding.dart      # registra el TaskController (inyección de deps.)
+├── theme/
+│   └── app_theme.dart         # colores, sombras, bordes redondeados, ThemeData
 ├── screens/
 │   └── task_screen.dart       # arma la pantalla con los 3 widgets
 └── widgets/
@@ -75,6 +77,13 @@ lib/
     ├── task_list.dart         # Obx -> ListView reactivo
     └── task_tile.dart         # fila: checkbox + título + borrar
 ```
+
+## Apariencia
+
+Estilo "dashboard": fondo morado, tarjeta blanca grande con esquinas
+redondeadas y sombra suave, tarjetas de estadísticas con degradado
+(índigo / coral / verde) e insignia naranja con el número de pendientes.
+Todo el look vive en `lib/theme/app_theme.dart`.
 
 ## Flujo de estado (GetX)
 

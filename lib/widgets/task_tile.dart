@@ -3,20 +3,21 @@ import 'package:get/get.dart';
 
 import '../controllers/task_controller.dart';
 import '../models/task.dart';
+import '../theme/app_theme.dart';
 
 /// ===========================================================================
 ///  WIDGET: TaskTile  (TF-4 - una fila de la lista de tareas)
 /// ===========================================================================
 ///
 /// Representa UNA tarea dentro de `TaskList`:
-///   - un checkbox para marcarla como completada / pendiente
-///   - el título (tachado si ya está completada)
+///   - un control circular tipo checkbox para marcarla completada / pendiente
+///   - el título (tachado y gris si ya está completada)
 ///   - un botón de basura para borrarla
 ///
 /// Punto para estudiar GetX:
 ///   - Este widget NO necesita su propio `Obx`. Ya vive dentro del `Obx` de
-///     `TaskList`, así que cuando el controller hace `tasks.refresh()` toda
-///     la lista (y por lo tanto este tile) se redibuja con los datos nuevos.
+///     `TaskList`, así que cuando el controller hace `tasks.refresh()` toda la
+///     lista (y este tile) se redibuja con los datos nuevos.
 ///   - El tile solo LLAMA a métodos del controller; no guarda estado.
 class TaskTile extends StatelessWidget {
   const TaskTile({super.key, required this.task});
@@ -28,34 +29,70 @@ class TaskTile extends StatelessWidget {
   Widget build(BuildContext context) {
     // Instancia única del controller (la misma para toda la app).
     final controller = Get.find<TaskController>();
+    final done = task.completed;
 
-    return ListTile(
-      // Checkbox de la izquierda.
-      leading: Checkbox(
-        value: task.completed,
-        // Al tocarlo, le pedimos al controller que cambie el estado.
-        onChanged: (_) => controller.toggleTask(task.id),
-      ),
+    return Material(
+      color: Colors.white,
+      borderRadius: AppRadius.tile,
+      child: InkWell(
+        borderRadius: AppRadius.tile,
+        // Tocar la fila alterna pendiente / completada.
+        onTap: () => controller.toggleTask(task.id),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          child: Row(
+            children: [
+              // --- "Checkbox" circular ---------------------------------------
+              // Es nuestro checkbox: círculo verde con check si está completada,
+              // círculo con borde gris si está pendiente.
+              GestureDetector(
+                onTap: () => controller.toggleTask(task.id),
+                child: Container(
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    color: done ? const Color(0xFF20C997) : Colors.transparent,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: done ? const Color(0xFF20C997) : AppColors.textMuted,
+                      width: 2,
+                    ),
+                  ),
+                  child: done
+                      ? const Icon(Icons.check, size: 18, color: Colors.white)
+                      : null,
+                ),
+              ),
+              const SizedBox(width: 12),
 
-      // Título. Si la tarea está completada, lo mostramos tachado y gris.
-      title: Text(
-        task.title,
-        style: TextStyle(
-          decoration: task.completed ? TextDecoration.lineThrough : null,
-          color: task.completed ? Colors.grey : null,
+              // --- Título --------------------------------------------------
+              Expanded(
+                child: Text(
+                  task.title,
+                  style: TextStyle(
+                    fontSize: 15,
+                    decoration: done ? TextDecoration.lineThrough : null,
+                    color: done ? AppColors.textMuted : AppColors.textDark,
+                  ),
+                ),
+              ),
+
+              // --- Botón borrar -------------------------------------------
+              IconButton(
+                onPressed: () => controller.deleteTask(task.id),
+                icon: const Icon(Icons.delete_outline_rounded),
+                tooltip: 'Borrar tarea',
+                // Anulamos el estilo morado del tema para este botón chico.
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: AppColors.textMuted,
+                  padding: EdgeInsets.zero,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-
-      // Botón de borrar a la derecha.
-      trailing: IconButton(
-        icon: const Icon(Icons.delete_outline),
-        color: Colors.red,
-        tooltip: 'Borrar tarea',
-        onPressed: () => controller.deleteTask(task.id),
-      ),
-
-      // Tocar en cualquier parte de la fila también alterna el estado.
-      onTap: () => controller.toggleTask(task.id),
     );
   }
 }
