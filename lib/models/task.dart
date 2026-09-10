@@ -1,43 +1,49 @@
-/// ===========================================================================
-///  MODELO: Task
-/// ===========================================================================
-///
-/// Esto es una "clase de datos" normal de Dart. Representa UNA sola tarea.
-///
-/// Punto importante para estudiar GetX:
-///   - Este archivo NO importa GetX.
-///   - El modelo no sabe nada de la interfaz ni del estado de la app.
-///   - GetX solo entra en juego en el `TaskController`, que es quien guarda
-///     la LISTA de tareas y avisa a los widgets cuando esa lista cambia.
-///
-/// Regla mental: el modelo = "qué es una tarea".
-///               el controller = "cómo cambian las tareas y quién se entera".
+/**
+ * Plain data model that represents a single task.
+ *
+ * This class is framework-agnostic: it does not depend on GetX or Flutter. It
+ * only describes what a task is. The reactive list of tasks and the logic that
+ * mutates it live in `TaskController`.
+ */
 class Task {
+  /**
+   * Creates a task with the given [title].
+   *
+   * [completed] defaults to `false`. A unique [id] is generated from the
+   * current timestamp combined with an internal sequence counter.
+   */
   Task({
     required this.title,
     this.completed = false,
   }) : id = '${DateTime.now().microsecondsSinceEpoch}-${_seq++}';
 
-  /// Contador interno de la clase (es `static`, o sea compartido por todas las
-  /// instancias). Sirve para que dos tareas creadas en el mismo microsegundo
-  /// igual tengan un `id` distinto.
+  /**
+   * Shared sequence counter used to keep the generated [id] unique even when
+   * several tasks are created within the same microsecond.
+   */
   static int _seq = 0;
 
-  /// Identificador único de la tarea.
-  /// Lo usamos para ubicarla dentro de la lista cuando hay que marcarla como
-  /// completada o borrarla. Es `final`: nunca cambia una vez creada la tarea.
+  /**
+   * Unique identifier of the task.
+   *
+   * Used to locate the task inside the list when toggling or deleting it. It is
+   * `final` and never changes once the task is created.
+   */
   final String id;
 
-  /// Texto que describe la tarea (ej: "Estudiar GetX").
-  /// No es `final` porque, en teoría, se podría editar.
+  /**
+   * Human-readable text that describes the task (for example, "Study GetX").
+   */
   String title;
 
-  /// Estado de la tarea:
-  ///   - `false` -> pendiente
-  ///   - `true`  -> completada
+  /**
+   * Completion state of the task: `false` means pending, `true` means done.
+   */
   bool completed;
 
-  /// Representación en texto, útil solo para depurar (print en consola).
+  /**
+   * Returns a debug-friendly string representation of the task.
+   */
   @override
   String toString() => 'Task($id, "$title", completed: $completed)';
 }

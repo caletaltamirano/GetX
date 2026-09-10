@@ -4,43 +4,46 @@ import 'package:get/get.dart';
 import 'bindings/task_binding.dart';
 import 'screens/task_screen.dart';
 
-/// Punto de entrada de la app. Nada especial: arranca `TaskFlowApp`.
+/**
+ * Application entry point.
+ *
+ * Boots the Flutter framework and mounts [TaskFlowApp] as the root widget.
+ */
 void main() {
   runApp(const TaskFlowApp());
 }
 
-/// ===========================================================================
-///  RAÍZ DE LA APP: TaskFlowApp
-/// ===========================================================================
-///
-/// Usamos `GetMaterialApp` en lugar del `MaterialApp` normal. Eso es lo que
-/// "enciende" GetX en toda la aplicación y habilita:
-///   - la inyección de dependencias (Bindings)
-///   - la navegación de GetX (`Get.to`, `Get.back`, ...)
-///   - utilidades como `Get.snackbar`, `Get.dialog`, etc.
-///
-/// Si dejáramos `MaterialApp`, `Obx` seguiría funcionando, pero perderíamos
-/// Bindings y navegación de GetX.
+/**
+ * Root widget of the application.
+ *
+ * Uses [GetMaterialApp] instead of the standard `MaterialApp` so that GetX is
+ * enabled across the whole app. This activates dependency injection through
+ * bindings, GetX navigation (`Get.to`, `Get.back`, ...) and helpers such as
+ * `Get.snackbar` and `Get.dialog`.
+ */
 class TaskFlowApp extends StatelessWidget {
+  /**
+   * Creates the root widget.
+   */
   const TaskFlowApp({super.key});
 
+  /**
+   * Builds the [GetMaterialApp] tree.
+   *
+   * Registers [TaskBinding] as the initial binding so the [TaskController] is
+   * available before the first screen is rendered, applies a Material 3 theme
+   * seeded from indigo and sets [TaskScreen] as the home screen.
+   */
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'TaskFlow',
       debugShowCheckedModeBanner: false,
-
-      /// `initialBinding` se ejecuta ANTES de mostrar la primera pantalla.
-      /// `TaskBinding` registra el `TaskController`, así que cuando
-      /// `TaskScreen` y sus widgets hagan `Get.find<TaskController>()`, el
-      /// controller ya va a existir.
       initialBinding: TaskBinding(),
-
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
-
       home: const TaskScreen(),
     );
   }

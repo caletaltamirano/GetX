@@ -3,24 +3,26 @@ import 'package:get/get.dart';
 
 import '../controllers/task_controller.dart';
 
-/// ===========================================================================
-///  WIDGET: StatsBoard  (TF-5 - tablero de estadísticas)
-/// ===========================================================================
-///
-/// Muestra 3 tarjetas: Total / Pendientes / Completadas.
-///
-/// Punto para estudiar GetX:
-///   - Los números vienen de getters del controller (`totalTasks`, etc.) que
-///     NO son `.obs`. Aun así el tablero es reactivo porque esos getters leen
-///     `tasks` DENTRO de este `Obx`.
-///   - Un solo `Obx` envuelve las 3 tarjetas: cuando `tasks` cambia, solo esta
-///     fila se vuelve a dibujar, no toda la pantalla.
+/**
+ * Reactive statistics board.
+ *
+ * Displays three cards: total, pending and completed tasks. The values come
+ * from non-observable getters of [TaskController], yet the board stays reactive
+ * because those getters read `tasks` inside this [Obx]. A single [Obx] wraps
+ * the row, so only this section rebuilds when `tasks` changes.
+ */
 class StatsBoard extends StatelessWidget {
+  /**
+   * Creates the statistics board.
+   */
   const StatsBoard({super.key});
 
+  /**
+   * Resolves the shared [TaskController] and builds the reactive row of
+   * [_StatCard] widgets.
+   */
   @override
   Widget build(BuildContext context) {
-    // Instancia única del controller (registrada por TaskBinding).
     final controller = Get.find<TaskController>();
 
     return Obx(
@@ -58,9 +60,16 @@ class StatsBoard extends StatelessWidget {
   }
 }
 
-/// Tarjeta individual de estadística. Es un widget "tonto": recibe los datos
-/// ya listos por parámetro y solo los dibuja. No sabe nada de GetX.
+/**
+ * Presentational card for a single statistic.
+ *
+ * A "dumb" widget: it receives ready-to-render data through its constructor and
+ * only paints it. It knows nothing about GetX.
+ */
 class _StatCard extends StatelessWidget {
+  /**
+   * Creates a statistic card from its [icon], [label], [value] and [color].
+   */
   const _StatCard({
     required this.icon,
     required this.label,
@@ -68,11 +77,21 @@ class _StatCard extends StatelessWidget {
     required this.color,
   });
 
+  /** Icon shown at the top of the card. */
   final IconData icon;
+
+  /** Caption shown below the value. */
   final String label;
+
+  /** Numeric value displayed prominently. */
   final int value;
+
+  /** Accent color applied to the icon, value and label. */
   final Color color;
 
+  /**
+   * Builds the tinted [Card] with the icon, value and label stacked vertically.
+   */
   @override
   Widget build(BuildContext context) {
     return Card(
